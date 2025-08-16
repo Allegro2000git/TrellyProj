@@ -1,0 +1,21 @@
+.tasks-table {
+    border-collapse: collapse;
+    margin: 2rem 0;
+    background-color: rgba(56, 226, 35, 0.93);
+}
+
+.tasks-table th,
+.tasks-table td {
+    border: 2px solid #646cff;
+    padding: 10px 12px;
+    text-align: left;
+}
+
+.tasks-table th {
+    background-color: #8d8df6;
+    width: 120px;
+}
+
+.tasks-table td {
+    min-width: 150px;
+}
