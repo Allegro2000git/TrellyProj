@@ -1,18 +1,18 @@
 .tasks-table {
     border-collapse: collapse;
     margin: 2rem 0;
-    background-color: rgba(56, 226, 35, 0.93);
+    background-color: rgb(229, 229, 255);
 }
 
 .tasks-table th,
 .tasks-table td {
-    border: 2px solid #646cff;
+    border: 2px solid #001829;
     padding: 10px 12px;
     text-align: left;
 }
 
 .tasks-table th {
-    background-color: #8d8df6;
+    background-color: #a4d8f8;
     width: 120px;
 }
 
