@@ -3,13 +3,14 @@ import type {Task} from "../types";
 import {api} from "../api";
 
 type Props = {
-    taskId: string | null
+    taskId: string | null | undefined
+    boardId: string | null | undefined
 };
 
 
-export const TaskDetail = ({taskId}: Props) => {
+export const TaskDetail = ({taskId, boardId}: Props) => {
     const [detailQueryStatus, setDetailQueryStatus] = useState<'pending' | 'success' | 'loading'>('pending')
-    const [task,setTask]= useState<Task | null>(null)
+    const [task,setTask] = useState<Task | null>(null)
     const abortControllerRef= useRef<AbortController | null>(null)
 
     useEffect(() => {
@@ -23,12 +24,12 @@ export const TaskDetail = ({taskId}: Props) => {
 
         setDetailQueryStatus('loading')
 
-        api.getTask(taskId, abortControllerRef.current.signal)
+        api.getTask(taskId, boardId!, abortControllerRef.current.signal)
             .then(json => {
                 setDetailQueryStatus('success')
                 setTask(json.data)
             })
-    }, [taskId]);
+    }, [taskId, boardId]);
 
 
         if (detailQueryStatus === 'loading') {

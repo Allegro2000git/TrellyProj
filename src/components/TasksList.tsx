@@ -5,15 +5,14 @@ import {TaskItem} from "./TaskItem";
 
 
 type Props = {
-    onTaskSelect: (taskId: string) => void
-    selectedTaskId: string | null
+    onTaskSelect: (task: Task | null) => void
+    selectedTaskId: string | null | undefined
 };
 
 
 export const TasksList = ({onTaskSelect, selectedTaskId}: Props) => {
     const [taskQueryStatus, setTaskQueryStatus] = useState<'success' | 'loading'>('loading')
     const [tasks, setTasks] = useState<Task[] | []>([])
-
 
     useEffect(() => {
         api.getTasks().then((json) => {
