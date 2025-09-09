@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
 import {api} from "../api";
 import type {Task} from "../types";
 import {TaskItem} from "./TaskItem";
+import {useQuery} from "../hooks/utils/useQuery";
 
 
 type Props = {
@@ -9,23 +9,21 @@ type Props = {
     selectedTaskId: string | null | undefined
 };
 
-
 export const TasksList = ({onTaskSelect, selectedTaskId}: Props) => {
-    const [taskQueryStatus, setTaskQueryStatus] = useState<'success' | 'loading'>('loading')
-    const [tasks, setTasks] = useState<Task[] | []>([])
 
-    useEffect(() => {
-        api.getTasks().then((json) => {
-            setTaskQueryStatus('success')
-            setTasks(json.data)
-        })
-    }, [])
+    const {status, data} = useQuery({
+        queryFn: () => api.getTasks(),
+        queryKey: ['tracks']
+    })
+
+    if (status === "loading") {
+        return <p>Loading...</p>
+    }
 
     return (
         <ul>
             <h2>Task</h2>
-            {taskQueryStatus === "loading" && <p>Loading...</p>}
-            {tasks?.map((task) => <TaskItem onSelect={onTaskSelect} task={task} isSelected={task.id === selectedTaskId}/>)}
+            {data?.data.map((task) => <TaskItem key={task.id} onSelect={onTaskSelect} task={task} isSelected={task.id === selectedTaskId}/>)}
         </ul>
     );
 };

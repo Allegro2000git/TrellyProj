@@ -1,51 +1,32 @@
-import {useEffect, useRef, useState} from "react";
-import type {Task} from "../types";
 import {api} from "../api";
+import {useQuery} from "../hooks/utils/useQuery";
 
 type Props = {
-    taskId: string | null | undefined
-    boardId: string | null | undefined
+    taskId: string | null
+    boardId: string | null
 };
 
-
 export const TaskDetail = ({taskId, boardId}: Props) => {
-    const [detailQueryStatus, setDetailQueryStatus] = useState<'pending' | 'success' | 'loading'>('pending')
-    const [task,setTask] = useState<Task | null>(null)
-    const abortControllerRef= useRef<AbortController | null>(null)
 
-    useEffect(() => {
-        abortControllerRef.current?.abort()
-        if (!taskId) {
-            setTask(null)
-            setDetailQueryStatus('pending')
-            return
-        }
-        abortControllerRef.current = new AbortController()
+    const {status, data} = useQuery({
+        queryFn: ({signal}) => api.getTask(taskId!, boardId!, signal).then(res => res.data),
+        enabled: !!taskId,
+        queryKey: ['task', taskId]
+    })
 
-        setDetailQueryStatus('loading')
+    if (!taskId) {
+        return <span>Not task for display</span>
+    }
 
-        api.getTask(taskId, boardId!, abortControllerRef.current.signal)
-            .then(json => {
-                setDetailQueryStatus('success')
-                setTask(json.data)
-            })
-    }, [taskId, boardId]);
-
-
-        if (detailQueryStatus === 'loading') {
-            return <div>Loading...</div>
-        }
-
-        if (detailQueryStatus === 'pending') {
-            return <span>Not task for display</span>
-        }
-
+    if (status === 'loading') {
+        return <div>Loading...</div>
+    }
 
         return (
             <div>
                 <h2>Detail</h2>
-                <h4>{task?.attributes.title}</h4>
-                <div>Date: {new Date(task?.attributes.addedAt).toLocaleString()}</div>
+                <h4>{data?.attributes.title}</h4>
+                <div>Date: {new Date(data?.attributes.addedAt).toLocaleString()}</div>
             </div>
         );
     }
